@@ -35,7 +35,7 @@ jobs:
       
       # Step 6: Move Model to webapp Directory
       - name: Move Model to Webapp Directory
-        run: mv ./roberta-sequence-classification-9.onnx ./webapp
+        run: mv ./roberta-sequence/roberta-sequence-classification-9.onnx ./webapp
 
       # Step 7: Debug Directory to Confirm Model Location
       - name: Debug Directory
