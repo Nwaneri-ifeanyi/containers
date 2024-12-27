@@ -1,4 +1,4 @@
-name: Build and Publish Container to Docker Hub
+name: Build and Package RoBERTa Sequencing to Dockerhub
 
 on:
   push:
@@ -25,26 +25,43 @@ jobs:
       - name: Install Azure ML Extension
         run: az extension add --name ml
 
-      # Step 4: Retrieve Model from Azure
+      # Step 4: Set auto-install of Azure extensions
+      - name: Set Auto-Install of Azure Extensions
+        run: az config set extension.use_dynamic_install=yes_without_prompt
+
+      # Step 5: Download the Registered Model
       - name: Retrieve Model from Azure
         run: az ml model download --name "roberta-sequence" --version 1 --workspace-name "${{ secrets.AZURE_WORKSPACE_NAME }}" --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}"
-
-      # Step 5: Move Model to Webapp Directory
+      
+      # Step 6: Move Model to webapp Directory
       - name: Move Model to Webapp Directory
-        run: mv roberta-sequence-classification-9.onnx ./webapp
+        run: mv ./roberta-sequence/roberta-sequence-classification-9.onnx ./webapp
 
-      # Step 6: Log in to Docker Hub
+      # Step 7: Debug Directory to Confirm Model Location
+      - name: Debug Directory
+        run: ls -R ./webapp
+
+      # Step 8: Build and Tag the Docker Container
+      - name: Build Flask-App Container
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: false
+          tags: nwaneri/flask-roberta:latest
+
+      # Step 9: Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 7: Build and Push Flask-App Container
-      - name: Build and Push Flask-App Container
+      # Step 10: Push Docker Image to Docker Hub
+      - name: Push Docker Image
         uses: docker/build-push-action@v2
         with:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/flask-roberta:latest
+          tags: nwaneri/flask-roberta:latest
