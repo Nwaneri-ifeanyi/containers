@@ -1,11 +1,9 @@
 name: Build and Package RoBERTa Sequencing to Dockerhub
 
 on:
-  # Trigger workflow on push to main branch
   push:
     branches:
       - main
-  # Allow manual triggering of the workflow
   workflow_dispatch:
 
 jobs:
@@ -33,13 +31,17 @@ jobs:
 
       # Step 5: Download the Registered Model
       - name: Retrieve Model from Azure
-        run: az ml model download --name "roberta-sequence" --version 1 --workspace-name "${{ secrets.AZURE_WORKSPACE_NAME }}" --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" --output-dir "./webapp"
+        run: az ml model download --name "roberta-sequence" --version 1 --workspace-name "${{ secrets.AZURE_WORKSPACE_NAME }}" --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}"
+      
+      # Step 6: Move Model to webapp Directory
+      - name: Move Model to Webapp Directory
+        run: mv ./roberta-sequence-classification-9.onnx ./webapp
 
-      # Step 6: Debug Directory to Confirm Model Download
+      # Step 7: Debug Directory to Confirm Model Location
       - name: Debug Directory
         run: ls -R ./webapp
 
-      # Step 7: Build and Tag the Docker Container
+      # Step 8: Build and Tag the Docker Container
       - name: Build Flask-App Container
         uses: docker/build-push-action@v2
         with:
