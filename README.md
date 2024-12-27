@@ -45,8 +45,8 @@ project-root
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/your-repo-name/roberta-sequence-app.git
-cd roberta-sequence-app
+git clone [https://github.com/Nwaneri-ifeanyi/containers.git]
+cd rcontainers
 ```
 
 ### Step 2: Create and Activate a Virtual Environment
@@ -122,18 +122,6 @@ You can deploy the container to any Docker-compatible environment, such as:
 - **Google Cloud Run**
 - **AWS Elastic Container Service (ECS)**
 
-Example: Running the container in Azure Container Instances (ACI):
-
-```bash
-az container create \
-  --resource-group YOUR_RESOURCE_GROUP \
-  --name flask-roberta \
-  --image YOUR_DOCKER_USERNAME/flask-roberta:latest \
-  --cpu 1 \
-  --memory 1 \
-  --ports 5000 \
-  --environment-variables ENV_VAR_NAME=value
-```
 
 ## Endpoint Usage
 
